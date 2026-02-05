@@ -1,0 +1,328 @@
+import React, { useState, useRef } from 'react';
+import { Volume2, ChevronLeft, ChevronRight, BookOpen, ExternalLink } from 'lucide-react';
+
+const wordsData = [
+  {
+    word: "bellow",
+    meaning: "Emit a deep loud roar, typically in pain or anger.",
+    example: "The coach began to bellow instructions to the players across the field.",
+    synonyms: "Roar, shout, yell",
+    antonyms: "Whisper, murmur, mutter",
+    emoji: "📢"
+  },
+  {
+    word: "beneficiary",
+    meaning: "A person who derives advantage from something, especially a trust, will, or life insurance policy.",
+    example: "She was the sole beneficiary of her grandmother's substantial estate.",
+    synonyms: "Heir, recipient, grantee",
+    antonyms: "Giver, donor, benefactor",
+    emoji: "💰"
+  },
+  {
+    word: "botch",
+    meaning: "Carry out (a task) badly or carelessly.",
+    example: "The inexperienced mechanic managed to botch the simple oil change.",
+    synonyms: "Bungle, mess up, fumble",
+    antonyms: "Succeed, perfect, accomplish",
+    emoji: "🛠️"
+  },
+  {
+    word: "clutter",
+    meaning: "A collection of things lying about in an untidy mass.",
+    example: "The attic was filled with a lifetime of useless clutter.",
+    synonyms: "Mess, jumble, litter",
+    antonyms: "Order, neatness, tidiness",
+    emoji: "📦"
+  },
+  {
+    word: "dilapidated",
+    meaning: "(Of a building or object) in a state of disrepair or ruin as a result of age or neglect.",
+    example: "They bought a dilapidated farmhouse with the intention of restoring it.",
+    synonyms: "Run-down, ramshackle, decayed",
+    antonyms: "Pristine, intact, well-kept",
+    emoji: "🏚️"
+  },
+  {
+    word: "dismantle",
+    meaning: "Take (a machine or structure) to pieces.",
+    example: "The engineer had to dismantle the engine to find the broken part.",
+    synonyms: "Deconstruct, disassemble, strip",
+    antonyms: "Assemble, build, construct",
+    emoji: "🔧"
+  },
+  {
+    word: "farce",
+    meaning: "A comic dramatic work using buffoonery and horseplay; an absurd event.",
+    example: "The election process was widely regarded as a complete farce.",
+    synonyms: "Mockery, sham, slapstick",
+    antonyms: "Tragedy, solemnity, reality",
+    emoji: "🤡"
+  },
+  {
+    word: "futile",
+    meaning: "Incapable of producing any useful result; pointless.",
+    example: "Resistance to the new regulations proved to be entirely futile.",
+    synonyms: "Useless, vain, fruitless",
+    antonyms: "Effective, fruitful, productive",
+    emoji: "🛑"
+  },
+  {
+    word: "grueling",
+    meaning: "Extremely tiring and demanding.",
+    example: "The athletes underwent a grueling training schedule before the Olympics.",
+    synonyms: "Exhausting, taxing, arduous",
+    antonyms: "Easy, effortless, relaxing",
+    emoji: "🏃‍♂️"
+  },
+  {
+    word: "hospitable",
+    meaning: "Friendly and welcoming to strangers or guests.",
+    example: "The local villagers were incredibly hospitable to the stranded travelers.",
+    synonyms: "Welcoming, cordial, gracious",
+    antonyms: "Unfriendly, hostile, cold",
+    emoji: "🤝"
+  },
+  {
+    word: "lair",
+    meaning: "A wild animal's resting place, especially one that is well hidden.",
+    example: "The hunters tracked the bear back to its mountain lair.",
+    synonyms: "Den, hideout, burrow",
+    antonyms: "Exposure, open, public space",
+    emoji: "🐉"
+  },
+  {
+    word: "lavish",
+    meaning: "Sumptuously rich, elaborate, or luxurious.",
+    example: "The celebrities threw a lavish party on their private yacht.",
+    synonyms: "Luxurious, opulent, extravagant",
+    antonyms: "Meager, frugal, sparse",
+    emoji: "💎"
+  },
+  {
+    word: "morbid",
+    meaning: "Characterized by or appealing to an abnormal and unhealthy interest in disturbing and unpleasant subjects.",
+    example: "He had a morbid fascination with true crime and old cemeteries.",
+    synonyms: "Ghoulish, macabre, dark",
+    antonyms: "Cheerful, wholesome, healthy",
+    emoji: "💀"
+  },
+  {
+    word: "notorious",
+    meaning: "Famous or well known, typically for some bad quality or deed.",
+    example: "The city is notorious for its heavy traffic and unpredictable weather.",
+    synonyms: "Infamous, scandalous, ill-famed",
+    antonyms: "Renowned, respected, unknown",
+    emoji: "🕵️"
+  },
+  {
+    word: "pamper",
+    meaning: "Indulge with every attention, comfort, and kindness; spoil.",
+    example: "They love to pamper their dog with expensive treats and cozy beds.",
+    synonyms: "Spoil, indulge, coddle",
+    antonyms: "Neglect, mistreat, ignore",
+    emoji: "💆‍♀️"
+  },
+  {
+    word: "parasite",
+    meaning: "An organism that lives in or on an organism of another species and benefits by deriving nutrients at the other's expense.",
+    example: "The tick is a common parasite that can transmit diseases to humans.",
+    synonyms: "Leech, hanger-on, bloodsucker",
+    antonyms: "Host, donor, provider",
+    emoji: "🦟"
+  },
+  {
+    word: "shirk",
+    meaning: "Avoid or neglect (a duty or responsibility).",
+    example: "He was fired because he tried to shirk his responsibilities at the office.",
+    synonyms: "Evade, dodge, slack",
+    antonyms: "Confront, fulfill, embrace",
+    emoji: "🙈"
+  },
+  {
+    word: "surplus",
+    meaning: "An amount of something left over when requirements have been met; an excess of production or supply.",
+    example: "The country exported its surplus grain to nations in need.",
+    synonyms: "Excess, extra, remainder",
+    antonyms: "Shortage, deficit, lack",
+    emoji: "📈"
+  },
+  {
+    word: "timidity",
+    meaning: "Lack of courage or confidence.",
+    example: "Her timidity prevented her from speaking up during the meeting.",
+    synonyms: "Shyness, fearfulness, bashfulness",
+    antonyms: "Boldness, confidence, bravery",
+    emoji: "🐭"
+  },
+  {
+    word: "veto",
+    meaning: "A constitutional right to reject a decision or proposal made by a law-making body.",
+    example: "The president decided to veto the bill despite public support.",
+    synonyms: "Reject, block, forbid",
+    antonyms: "Approve, authorize, sanction",
+    emoji: "🚫"
+  }
+];
+
+const App = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(null);
+  const audioRef = useRef(null);
+
+  const nextWord = () => {
+    setCurrentIndex((prev) => (prev + 1) % wordsData.length);
+  };
+
+  const prevWord = () => {
+    setCurrentIndex((prev) => (prev - 1 + wordsData.length) % wordsData.length);
+  };
+
+  const playAudio = (index) => {
+    const fileName = (index + 1).toString().padStart(2, '0') + '.mp3';
+    if (audioRef.current) {
+      audioRef.current.src = fileName;
+      audioRef.current.play().catch(e => {
+        console.log("Audio file path: " + fileName);
+        setIsPlaying(index);
+        setTimeout(() => setIsPlaying(null), 1000);
+      });
+    }
+  };
+
+  const currentWord = wordsData[currentIndex];
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4 font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      {/* Background Glows */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-600/20 blur-[120px] rounded-full pointer-events-none"></div>
+
+      {/* Header */}
+      <div className="mb-8 text-center z-10 w-full max-w-3xl px-2">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-purple-500 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] mb-3 leading-tight whitespace-nowrap overflow-hidden">
+          Grade 7 Level B Unit 10
+        </h1>
+        <div className="space-y-2">
+          <p className="text-slate-400 uppercase tracking-widest text-[10px] sm:text-xs font-bold opacity-80">
+            Created by Amanullah Khan
+          </p>
+          <a 
+            href="https://www.smartstudygrid.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-1 text-cyan-400 tracking-[0.15em] text-[11px] sm:text-sm font-black transition-all hover:text-white hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+          >
+            WWW.SMARTSTUDYGRID.COM
+            <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+          </a>
+        </div>
+      </div>
+
+      {/* Main Book Card */}
+      <div className="relative w-full max-w-2xl z-10 perspective-1000">
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5),_0_0_20px_rgba(255,255,255,0.05)] transform transition-all duration-500">
+          
+          {/* Header Row */}
+          <div className="flex justify-between items-start mb-6">
+            <span className="text-3xl font-black text-red-600 drop-shadow-[0_0_8px_rgba(220,38,38,0.6)]">
+              {(currentIndex + 1).toString().padStart(2, '0')}
+            </span>
+            <div className="text-5xl animate-bounce-slow">
+              {currentWord.emoji}
+            </div>
+          </div>
+
+          {/* Word Content */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-400 drop-shadow-md">
+                {currentWord.word}
+              </h2>
+              <button 
+                onClick={() => playAudio(currentIndex)}
+                className={`p-3 rounded-full bg-slate-800 border border-slate-700 transition-all active:scale-90 hover:border-cyan-500 hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] ${isPlaying === currentIndex ? 'bg-cyan-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.8)]' : 'text-cyan-400'}`}
+              >
+                <Volume2 size={24} />
+              </button>
+            </div>
+
+            <div className="space-y-4 border-l-2 border-slate-800 pl-4 sm:pl-6 py-2">
+              <div>
+                <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1">Meaning</p>
+                <p className="text-lg md:text-xl text-slate-200 leading-relaxed italic">
+                  {currentWord.meaning}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-1">Example Sentence</p>
+                <p className="text-slate-300 font-medium">
+                  "{currentWord.example}"
+                </p>
+              </div>
+
+              <div className="pt-2 flex flex-wrap gap-4">
+                <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800 flex-1 min-w-[140px]">
+                  <p className="text-[10px] uppercase font-bold text-cyan-500 tracking-widest mb-1">Synonyms</p>
+                  <p className="text-sm text-slate-400">{currentWord.synonyms}</p>
+                </div>
+                <div className="bg-slate-950/50 p-3 rounded-xl border border-slate-800 flex-1 min-w-[140px]">
+                  <p className="text-[10px] uppercase font-bold text-rose-500 tracking-widest mb-1">Antonyms</p>
+                  <p className="text-sm text-slate-400">{currentWord.antonyms}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="mt-12 flex items-center justify-between border-t border-slate-800 pt-8">
+            <button 
+              onClick={prevWord}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-white transition-all group"
+            >
+              <ChevronLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="font-bold text-[10px] sm:text-xs uppercase hidden sm:inline">Previous</span>
+            </button>
+
+            <div className="flex gap-1 flex-wrap justify-center max-w-[100px] sm:max-w-none">
+              {wordsData.map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`h-1 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-4 bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,1)]' : 'w-1 bg-slate-800'}`}
+                />
+              ))}
+            </div>
+
+            <button 
+              onClick={nextWord}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-400 hover:text-white transition-all group"
+            >
+              <span className="font-bold text-[10px] sm:text-xs uppercase hidden sm:inline">Next</span>
+              <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        </div>
+        
+        <div className="absolute -bottom-2 -right-2 w-full h-full bg-cyan-500/5 rounded-3xl -z-10 transform translate-x-2 translate-y-2 border border-cyan-500/10"></div>
+      </div>
+
+      <div className="mt-8 flex items-center gap-2 text-slate-600 font-bold text-[10px] uppercase tracking-[0.2em] z-10">
+        <BookOpen size={12} />
+        <span>Word {currentIndex + 1} of {wordsData.length}</span>
+      </div>
+
+      <audio ref={audioRef} />
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .perspective-1000 { perspective: 1000px; }
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
+      `}} />
+    </div>
+  );
+};
+
+export default App;
